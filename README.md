@@ -1,36 +1,157 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ✨ Modern Task Management App
 
-## Getting Started
+A powerful and intuitive task management application built with Next.js 14, featuring both table and board views, custom fields, and real-time filtering.
 
-First, run the development server:
+![Task Management App](public/app-preview.png)
 
+## 🌟 Features
+
+### Core Functionality
+- **📋 Dual View System**
+  - Table view with resizable columns
+  - Kanban board view with drag-and-drop
+  - Persistent view preference
+
+- **💼 Task Management**
+  - Create, edit, and delete tasks
+  - Batch selection and deletion
+  - Sort by any column
+  - Advanced filtering system
+  - Drag-and-drop reordering
+
+- **🔧 Custom Fields**
+  - Add custom fields of different types
+  - Show/hide columns
+  - Filter by custom field values
+
+- **↩️ History Management**
+  - Undo/Redo support
+  - Action tracking
+  - State persistence
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **UI Components**: 
+  - [Headless UI](https://headlessui.dev/)
+  - [Framer Motion](https://www.framer.com/motion/)
+  - [Hero Icons](https://heroicons.com/)
+- **Drag & Drop**: [@hello-pangea/dnd](https://github.com/hello-pangea/dnd)
+
+## 🏗️ Architecture
+
+```mermaid
+graph TD
+    LS[Local Storage] <--> Store
+    
+    subgraph Store[Store Layer]
+        TS[Task Store]
+        CFS[Custom Fields Store]
+        HS[History Store]
+    end
+    
+    subgraph Components[React Components]
+        TT[TaskTable] --> TVH[TaskViewHeader]
+        TT --> PAG[Pagination]
+        TVH --> FIL[Filters]
+    end
+    
+    Store <--> Components
+```
+
+## 🚀 Getting Started
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/yourusername/task-management-app.git
+cd task-management-app
+```
+
+2. **Install dependencies**
+```bash
+npm install
+# or
+yarn install
+```
+
+3. **Run the development server**
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+├── app/                 # Next.js app router pages
+├── components/         # React components
+│   ├── Board/         # Board view components
+│   └── Table/         # Table view components
+├── store/             # Zustand store definitions
+├── hooks/             # Custom React hooks
+├── types/             # TypeScript types
+└── public/            # Static assets
+```
 
-## Learn More
+## 🔑 Key Components
 
-To learn more about Next.js, take a look at the following resources:
+- `TaskTable`: Main table view with resizable columns
+- `BoardView`: Kanban board with drag-and-drop
+- `TaskViewHeader`: Filtering and action controls
+- `CustomFieldsEditor`: Custom field management
+- `ResizableColumn`: Column width management
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 💾 State Management
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The application uses Zustand for state management with three main stores:
 
-## Deploy on Vercel
+```typescript
+// Task Store
+interface TaskStore {
+  tasks: Task[]
+  addTask: (task: Task) => void
+  updateTask: (id: string, updates: Partial<Task>) => void
+  deleteTask: (id: string) => void
+}
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+// Custom Fields Store
+interface CustomFieldsStore {
+  fields: CustomField[]
+  addField: (field: CustomField) => void
+  removeField: (id: string) => void
+}
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+// History Store
+interface HistoryStore {
+  past: State[]
+  future: State[]
+  undo: () => void
+  redo: () => void
+}
+```
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📫 Contact
+
+Your Name - [@yourtwitter](https://twitter.com/yourtwitter)
+
+Project Link: [https://github.com/yourusername/task-management-app](https://github.com/yourusername/task-management-app)

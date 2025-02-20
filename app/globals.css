@@ -19,3 +19,64 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    to right,
+    #f6f7f8 0%,
+    #edeef1 20%,
+    #f6f7f8 40%,
+    #f6f7f8 100%
+  );
+  background-size: 2000px 100%;
+}
+
+/* Add smooth transitions for view changes */
+.view-transition {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.view-enter {
+  opacity: 0;
+}
+
+.view-enter-active {
+  opacity: 1;
+}
+
+.view-exit {
+  opacity: 1;
+}
+
+.view-exit-active {
+  opacity: 0;
+}
+
+/* Smooth height transitions */
+.table-container {
+  transition: height 200ms ease-in-out;
+}
+
+/* Prevent content jump during page size changes */
+.pagination-container {
+  min-height: 60px;
+}
+
+/* Add these styles */
+.cursor-col-resize {
+  cursor: col-resize;
+}
+
+.select-none {
+  user-select: none;
+}
