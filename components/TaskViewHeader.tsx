@@ -183,22 +183,45 @@ export default function TaskViewHeader({
           {fields
             .filter(field => visibleFields.has(field.id))
             .map(field => (
-              <input
-                key={field.id}
-                type="text"
-                placeholder={`Filter ${field.name}`}
-                value={localFilters.customFields[field.id] || ''}
-                onChange={(e) =>
-                  handleFilterChange({
-                    ...localFilters,
-                    customFields: {
-                      ...localFilters.customFields,
-                      [field.id]: e.target.value,
-                    },
-                  })
-                }
-                className="px-3 py-1 text-sm border rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
+              field.type === 'checkbox' ? (
+                <div key={field.id} className="flex items-center gap-2">
+                  <label className="text-sm text-gray-600">{field.name}:</label>
+                  <select
+                    value={localFilters.customFields[field.id] || 'all'}
+                    onChange={(e) => 
+                      handleFilterChange({
+                        ...localFilters,
+                        customFields: {
+                          ...localFilters.customFields,
+                          [field.id]: e.target.value
+                        },
+                      })
+                    }
+                    className="px-3 py-1.5 text-sm rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                  >
+                    <option value="all">All</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                  </select>
+                </div>
+              ) : (
+                <input
+                  key={field.id}
+                  type="text"
+                  placeholder={`Filter ${field.name}`}
+                  value={localFilters.customFields[field.id] || ''}
+                  onChange={(e) =>
+                    handleFilterChange({
+                      ...localFilters,
+                      customFields: {
+                        ...localFilters.customFields,
+                        [field.id]: e.target.value,
+                      },
+                    })
+                  }
+                  className="px-3 py-1 text-sm border rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                />
+              )
             ))}
         </div>
       )}

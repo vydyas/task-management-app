@@ -16,20 +16,37 @@ export default function CustomFieldsEditor({ isOpen, onClose }: CustomFieldsEdit
     name: '',
     type: 'text' as CustomFieldType,
   })
+  const [error, setError] = useState<string | null>(null)
 
   const handleAddField = () => {
     if (!newField.name.trim()) return
+
+    // Check for duplicate names (case-insensitive)
+    const isDuplicate = fields.some(
+      field => field.name.toLowerCase() === newField.name.trim().toLowerCase()
+    )
+    
+    if (isDuplicate) {
+      setError('A field with this name already exists')
+      return
+    }
 
     const defaultValue = newField.type === 'checkbox' ? false : 
                         newField.type === 'number' ? 0 : ''
 
     addField({
-      name: newField.name,
+      name: newField.name.trim(),
       type: newField.type,
       defaultValue,
     })
 
     setNewField({ name: '', type: 'text' })
+    setError(null)
+  }
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewField(prev => ({ ...prev, name: e.target.value }))
+    setError(null)  // Clear error when user starts typing
   }
 
   return (
@@ -53,13 +70,21 @@ export default function CustomFieldsEditor({ isOpen, onClose }: CustomFieldsEdit
           <div className="p-6">
             {/* Add new field */}
             <div className="flex gap-4 mb-8">
-              <input
-                type="text"
-                value={newField.name}
-                onChange={(e) => setNewField({ ...newField, name: e.target.value })}
-                placeholder="Field name"
-                className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-              />
+              <div className="flex-1">
+                <input
+                  type="text"
+                  value={newField.name}
+                  onChange={handleNameChange}
+                  placeholder="Field name"
+                  className={`flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500
+                    ${error ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
+                />
+                {error && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {error}
+                  </p>
+                )}
+              </div>
               <select
                 value={newField.type}
                 onChange={(e) => setNewField({ ...newField, type: e.target.value as CustomFieldType })}

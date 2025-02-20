@@ -135,9 +135,17 @@ export default function TaskTable() {
       const customFieldsMatch = Object.entries(filters.customFields).every(([fieldId, filterValue]) => {
         // Skip filtering if field is not visible
         if (!visibleFields.has(fieldId)) return true
-        if (!filterValue) return true
+        if (!filterValue || filterValue === 'all') return true
         
+        const field = fields.find(f => f.id === fieldId)
         const fieldValue = task.customFields?.[fieldId]
+        
+        // Handle checkbox field filtering
+        if (field?.type === 'checkbox') {
+          return String(fieldValue) === filterValue
+        }
+        
+        // Handle text/number field filtering
         if (fieldValue === undefined) return false
         return String(fieldValue).toLowerCase().includes(filterValue.toLowerCase())
       })
@@ -424,8 +432,20 @@ export default function TaskTable() {
                                   className="overflow-hidden px-2 flex-shrink-0 text-left"
                                   style={{ width: `${columnWidths[field.id] || 150}px` }}
                                 >
-                                  {(task.customFields?.[field.id] ?? field.defaultValue) || (
-                                    <span className="text-gray-400">-</span>
+                                  {field.type === 'checkbox' ? (
+                                    task.customFields?.[field.id] !== undefined ? (
+                                      <span className={`text-sm ${
+                                        task.customFields[field.id] ? 'text-green-600' : 'text-gray-500'
+                                      }`}>
+                                        {task.customFields[field.id] ? 'Yes' : 'No'}
+                                      </span>
+                                    ) : (
+                                      <span className="text-gray-400">-</span>
+                                    )
+                                  ) : (
+                                    (task.customFields?.[field.id] ?? field.defaultValue) || (
+                                      <span className="text-gray-400">-</span>
+                                    )
                                   )}
                                 </span>
                               ))}

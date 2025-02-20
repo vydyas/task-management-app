@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { Task } from '@/types';
+import { Task, CustomField } from '@/types';
+import { useCustomFieldsStore } from '@/store/useCustomFieldsStore';
 
 interface TaskFormProps {
   onSubmit: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void;
@@ -8,7 +9,10 @@ interface TaskFormProps {
   initialData?: Task;
 }
 
+type CustomFieldValue = string | number | boolean;
+
 export default function TaskForm({ onSubmit, onCancel, initialData }: TaskFormProps) {
+  const { fields } = useCustomFieldsStore();
   const [formData, setFormData] = useState({
     title: initialData?.title ?? '',
     status: initialData?.status ?? 'todo',
@@ -19,6 +23,16 @@ export default function TaskForm({ onSubmit, onCancel, initialData }: TaskFormPr
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
+  };
+
+  const handleCustomFieldChange = (field: CustomField, value: CustomFieldValue) => {
+    setFormData(prev => ({
+      ...prev,
+      customFields: {
+        ...prev.customFields,
+        [field.id]: value
+      }
+    }));
   };
 
   return (
@@ -87,56 +101,51 @@ export default function TaskForm({ onSubmit, onCancel, initialData }: TaskFormPr
         </div>
       </div>
 
-      {Object.entries(formData.customFields).map(([id, value]) => (
-        <div key={id}>
-          <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900 mb-2">
-            {id}
-          </label>
-          {typeof value === 'boolean' ? (
-            <input
-              type="checkbox"
-              id={id}
-              checked={value}
-              onChange={(e) => setFormData({
-                ...formData,
-                customFields: {
-                  ...formData.customFields,
-                  [id]: e.target.checked
-                }
-              })}
-              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-            />
-          ) : typeof value === 'number' ? (
-            <input
-              type="number"
-              id={id}
-              value={value}
-              onChange={(e) => setFormData({
-                ...formData,
-                customFields: {
-                  ...formData.customFields,
-                  [id]: Number(e.target.value)
-                }
-              })}
-              className="block w-full rounded-lg border-0 px-4 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm"
-            />
-          ) : (
-            <input
-              type="text"
-              id={id}
-              value={value}
-              onChange={(e) => setFormData({
-                ...formData,
-                customFields: {
-                  ...formData.customFields,
-                  [id]: e.target.value
-                }
-              })}
-              className="block w-full rounded-lg border-0 px-4 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm"
-            />
-          )}
+      {fields.length > 0 && (
+        <div className="border-t border-gray-200 mt-8">
+          <div className="bg-gray-50 px-6 py-4 rounded-lg mt-6">
+            <h3 className="text-sm font-medium text-gray-900 mb-4">
+              <span className="bg-gray-100 px-2 py-1 rounded">Custom Fields</span>
+            </h3>
+            <div className="space-y-4 divide-y divide-gray-200">
+              {fields.map(field => (
+                <div key={field.id} className="pt-4 first:pt-0">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {field.name}
+                  </label>
+                  {field.type === 'checkbox' ? (
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(formData.customFields[field.id] ?? field.defaultValue)}
+                        onChange={(e) => handleCustomFieldChange(field, e.target.checked)}
+                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                      />
+                      <span className="ml-2 text-sm text-gray-500">
+                        {formData.customFields[field.id] ? 'Yes' : 'No'}
+                      </span>
+                    </div>
+                  ) : field.type === 'number' ? (
+                    <input
+                      type="number"
+                      value={String(formData.customFields[field.id] ?? field.defaultValue)}
+                      onChange={(e) => handleCustomFieldChange(field, Number(e.target.value))}
+                      className="block w-full rounded-lg border-gray-300 bg-white px-4 py-2.5 text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      value={String(formData.customFields[field.id] ?? field.defaultValue)}
+                      onChange={(e) => handleCustomFieldChange(field, field.type === 'number' ? Number(e.target.value) : e.target.value)}
+                      className="block w-full rounded-lg border-gray-300 bg-white px-4 py-2.5 text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      ))}
+      )}
 
       <div className="flex justify-end gap-2 pt-6">
         <button
