@@ -6,7 +6,7 @@ import {
   ArrowUturnLeftIcon,
   ArrowUturnRightIcon 
 } from '@heroicons/react/20/solid'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Task } from '@/types'
 import { useCustomFieldsStore } from '@/store/useCustomFieldsStore'
 import CustomFieldsVisibility from './CustomFieldsVisibility'
@@ -46,9 +46,12 @@ export default function TaskViewHeader({
   const { fields } = useCustomFieldsStore()
   const { canUndo, canRedo, undo, redo } = useHistoryStore()
 
-  const debouncedOnFilter = debounce((filters: TaskViewFilters) => {
+  const debouncedOnFilter = useCallback(
+    debounce((filters: TaskViewFilters) => {
       onFilter(filters)
-    }, 500)
+    }, 500),
+    [onFilter]
+  )
 
   const handleFilterChange = (updates: Partial<TaskViewFilters>) => {
     const newFilters = { ...localFilters, ...updates }
