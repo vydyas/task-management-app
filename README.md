@@ -4,6 +4,10 @@ A powerful and intuitive task management application built with Next.js 14, feat
 
 ![Task Management App](public/app-preview.png)
 
+
+<img width="1112" alt="Screenshot 2025-02-20 at 1 19 11 PM" src="https://github.com/user-attachments/assets/5c91954b-504e-44a8-9d93-8198013ea1be" />
+
+
 ## 🌟 Features
 
 ### Core Functionality
