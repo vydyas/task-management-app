@@ -156,6 +156,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📫 Contact
 
-Siddhu - [@yourtwitter](https://twitter.com/siddhucse)
+Siddhu - [@siddhucse](https://twitter.com/siddhucse)
 
 Project Link: [https://github.com/vydyas/task-management-app](https://github.com/yourusername/task-management-app)
